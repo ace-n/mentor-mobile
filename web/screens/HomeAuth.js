@@ -37,6 +37,9 @@ class HomeAuth extends Component {
       fbUserId: id
     });
 
+    // Manual override of auth -- for testing 
+    this.setState({ fbToken: 'faketoken', fbUserId: '1842505195770400' });
+
     if (this.state.fbToken !== null) {
       if (this.state.fbUserId !== null){
         this.props.navigation.navigate('menteeListView');
@@ -80,19 +83,14 @@ class HomeAuth extends Component {
       this.setState({ facebookLoginFail: true });
     }
 
-    console.log("HEREHERE");
-
     if (type === 'success') {
       //API call to FB Graph API. Will add more code to fetch social media data
       let response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`
       );
       let responseJson = await response.json();
-      console.log('Printing token');
       console.log(token);
-      console.log('Printing response');
       console.log(responseJson);
-      console.log('Printed response.json()');
 
       // Get the Facebook User ID from the response so we can look up the Mentees of this user
       console.log('Facebook ID: ' + responseJson.id);

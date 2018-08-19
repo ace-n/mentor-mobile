@@ -9,6 +9,8 @@ import {
   AsyncStorage
 } from 'react-native';
 
+const API_URL = 'https://heymentortestdeployment.herokuapp.com';
+
 class MenteeListView extends Component {
   state = {
     menteeItem: [],
@@ -31,45 +33,35 @@ class MenteeListView extends Component {
   constructMenteeItemsFromResponse = async menteeIds => {
     menteeItems = [];
 
-    for (let mentee of menteeIds) {
-      let response = await fetch(
-        `https://heymentortestdeployment.herokuapp.com/mentees/${mentee}`
-      );
-      let responseJson = await response.json();
+    try {
+      for (let mentee of menteeIds) {
+        let response = await fetch(`${API_URL}/mentees/${mentee}`);
+        let responseJson = await response.json();
 
-      console.log(responseJson);
-
-      fullName =
-        responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
-      menteeItems.push({
-        name: fullName,
-        school: responseJson[0].school.name,
-        grade: responseJson[0].school.grade,
-        id: responseJson[0].mentee_id,
-        fullMentee: responseJson[0]
-      });
+        fullName =
+          responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
+        menteeItems.push({
+          name: fullName,
+          school: responseJson[0].school.name,
+          grade: responseJson[0].school.grade,
+          id: responseJson[0].mentee_id,
+          fullMentee: responseJson[0]
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-
     this.setState({ menteeItem: menteeItems });
-
-    console.log('mentee items');
-    console.log(menteeItems);
   };
 
   getUserData = async userId => {
-    console.log('FacebookID: ' + userId);
-
-    let response = await fetch(
-      `https://heymentortestdeployment.herokuapp.com/mentors/${userId}`
-    );
-    let responseJson = await response.json();
-
-    console.log('Printing responsejson');
-    console.log(responseJson);
-
-    console.log('Mentees:');
-    console.log(responseJson[0].mentee_ids);
-    this.constructMenteeItemsFromResponse(responseJson[0].mentee_ids);
+    try {
+      let response = await fetch(`${API_URL}/mentors/${userId}`);
+      let responseJson = await response.json();
+      this.constructMenteeItemsFromResponse(responseJson[0].mentee_ids);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   static navigationOptions = ({ navigation }) => ({
@@ -84,14 +76,13 @@ class MenteeListView extends Component {
         <Icon
           name="ios-notifications"
           type="ionicon"
-          size={40}
+          size={34}
           iconStyle={styles.leftImage}
         />
       </TouchableOpacity>
     ),
 
     headerRight: (
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('settings');
@@ -100,11 +91,10 @@ class MenteeListView extends Component {
         <Icon
           name="gear"
           type="font-awesome"
-          size={40}
+          size={34}
           iconStyle={styles.rightImage}
         />
       </TouchableOpacity>
-
     )
   });
 

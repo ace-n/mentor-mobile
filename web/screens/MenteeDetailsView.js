@@ -23,12 +23,17 @@ const styles = StyleSheet.create({
 });
 
 class MenteeDetailsView extends Component {
-
   static navigationOptions = ({ navigation }) => ({
-    //title: {state.params.mentee.fname},  
+    title: `${navigation.state.params.mentee.person.fname}`,
     headerTitleStyle,
-    headerRight: <Icon name="gear" type="font-awesome" size={40} iconStyle={styles.rightImage} /> 
-
+    headerRight: (
+      <Icon
+        name="gear"
+        type="font-awesome"
+        size={34}
+        iconStyle={styles.rightImage}
+      />
+    )
   });
 
   render() {
